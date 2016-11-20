@@ -33,7 +33,7 @@ public class MeshAndRunAndPostAndSave extends StarMacro {
 
         String postprocessingPath = path + File.separator + getSimulation().getPresentationName() + File.separator;
         File dir = new File(postprocessingPath);
-        simulation.println("Path is " + postprocessingPath);
+        simulation.println("** Path is " + postprocessingPath);
         dir.mkdir();
 
         MeshPipelineController meshPipelineController_0
@@ -42,17 +42,21 @@ public class MeshAndRunAndPostAndSave extends StarMacro {
         meshPipelineController_0.generateSurfaceMesh();
 
         meshPipelineController_0.generateVolumeMesh();
+        
+        
+         simulation.println("** Meshing finished.");
         int iteration = simulation.getSimulationIterator().getCurrentIteration();
 
 //        simulation.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Maximum Steps").get
 //        
 //        if(iteration < maxSteps)
+         simulation.println("** Simulation running ...");
         simulation.getSimulationIterator().run();
 //        else{
 //            simulation.println("MaxStep satisfied");
 //            new StarScript(getActiveSimulation(), new java.io.File(resolvePath(path+File.separator+"Macros2017"+File.separator+"PostProcess"+File.separator+"TotPressCoeffx.java"))).play();
 //        }
-
+        simulation.println("** Simulation running finsihed");
         int i = 0;
         do {
             iteration = simulation.getSimulationIterator().getCurrentIteration();
@@ -61,11 +65,18 @@ public class MeshAndRunAndPostAndSave extends StarMacro {
                 //test, ein skript ausführen
                 //new StarScript(getActiveSimulation(), new java.io.File(resolvePath(path+File.separator+"Macros2017"+File.separator+"PostProcess"+File.separator+"TotPressCoeffx.java"))).play();
                 //all postprocessing stuffs
+                simulation.println("** Doing PostProcessing...");
+                simulation.println("** CpT_X...");
                 totPressCoeffx(postprocessingPath);
+                simulation.println("** CpT_Y...");
                 totPressCoeffy(postprocessingPath);
+                simulation.println("** Vi and Vj...");
                 Velo_i_and_j(postprocessingPath);
+                simulation.println("** Surface Pressure...");
                 SurfacePressure(postprocessingPath);
+                simulation.println("** Plots...");
                 Plots(postprocessingPath);
+                simulation.println("** Finished!");
             }
         } while (simulation.getSimulationIterator().isIterating());
         iteration = simulation.getSimulationIterator().getCurrentIteration();
